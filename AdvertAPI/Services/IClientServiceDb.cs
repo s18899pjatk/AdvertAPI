@@ -13,6 +13,6 @@ namespace AdvertAPI.Services
         public RefreshTokenResponse RefreshToken(string rToken);
         public LoginResponse Login(LoginRequest request);
         public CampaignListResponse ListOfCampaigns(string login);
-
+        public CreateCampaignResponse CreateCampaign(CreateCampaignRequest request);
     }
 }

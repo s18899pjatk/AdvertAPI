@@ -209,5 +209,86 @@ namespace AdvertAPI.Services
                 Banners = adds
             };
         }
+
+        public CreateCampaignResponse CreateCampaign(CreateCampaignRequest request)
+        {
+            // def date Format 2020-01-01T00:00:00
+            var exists = _campaignDbContext.Clients.Any(c => c.IdClient == request.IdClient);
+            if (request.EndDate < request.StartDate || !exists)
+            {
+                return null;
+            }
+            var heights = new List<decimal>();
+            var numOfBuild = 0;
+            var firstB = _campaignDbContext.Buildings
+                .Where(b => b.IdBuilding == request.FromIdBuilding)
+                .FirstOrDefault();
+            heights.Add(firstB.Height);
+
+            for (int i = request.FromIdBuilding + 1; i <= request.ToIdBuilding; i++)
+            {
+                var nextB = _campaignDbContext.Buildings
+                .Where(b => b.IdBuilding == i)
+                .FirstOrDefault();
+
+                if (firstB == null || nextB == null)
+                {
+                    return null;
+                }
+
+                if (firstB.Street != nextB.Street || firstB.City != nextB.City)
+                {
+                    return null;
+                }
+                heights.Add(nextB.Height);
+                numOfBuild++;
+            }
+            // looking for the height of our banners 
+            var sorted = heights.OrderByDescending(v => v).ToArray();
+            var firstBannerHeight = sorted[0];
+            var secondBannerHeight = sorted[1] * numOfBuild;
+            var price = (firstBannerHeight + secondBannerHeight) * request.PricePerSquareMeter;
+
+            var campaign = new Campaign()
+            {
+                IdClient = request.IdClient,
+                StartDate = request.StartDate,
+                EndDate = request.EndDate,
+                PricePerSquareMeter = request.PricePerSquareMeter,
+                FromIdBuilding = request.FromIdBuilding,
+                ToIdBuilding = request.ToIdBuilding
+            };
+            _campaignDbContext.Add(campaign);
+            _campaignDbContext.SaveChanges();
+
+            var banners = new List<int>();
+            var banner1 = new Banner()
+            {
+                IdCampaign = campaign.IdCampaign,
+                Area = firstBannerHeight,
+                Name = "for campaign: " + campaign.IdCampaign,
+                Price = price / 2
+            };
+            _campaignDbContext.Add(banner1);
+            _campaignDbContext.SaveChanges();
+            banners.Add(banner1.IdAdvertisement);
+
+            var banner2 = new Banner()
+            {
+                IdCampaign = campaign.IdCampaign,
+                Area = secondBannerHeight,
+                Name = "for campaign: " + campaign.IdCampaign,
+                Price = price / 2
+            };
+            _campaignDbContext.Add(banner2);
+            _campaignDbContext.SaveChanges();
+            banners.Add(banner2.IdAdvertisement);
+            return new CreateCampaignResponse
+            {
+                IdCampaign = campaign.IdCampaign,
+                TotalPrice = price,
+                Banners = banners
+            };
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace AdvertAPI.Entities
         }
 
         public CampaignDbContext(DbContextOptions options)
-            :base(options)
+            : base(options)
         {
 
         }

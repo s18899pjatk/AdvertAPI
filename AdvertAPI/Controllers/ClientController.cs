@@ -64,7 +64,7 @@ namespace AdvertAPI.Controllers
             return Ok(res);
         }
 
-        [Authorize]     // need acceess token to test
+        [Authorize]     // need access token to test
         [HttpGet("campaigns")]
         public IActionResult ListOfCampaigns()
         {
@@ -77,6 +77,17 @@ namespace AdvertAPI.Controllers
             }
             return Ok(res);
         }
+        [HttpPost("createCampaign")]
+        public IActionResult CreateCampaign(CreateCampaignRequest request)
+        {
+
+            var res = _clientServiceDb.CreateCampaign(request);
+            if (res == null)
+            {
+                return StatusCode(400);
+            }
+            return Ok(res);
+        }   
     }
 }
 

@@ -51,7 +51,23 @@ namespace AdvertAPI.Configurations
                     City = "Poznan",
                     Street = "Lublinska",
                     StreetNumber = 3,
+                    Height = 11
+                },
+                  new Building()
+                {
+                    IdBuilding = 5,
+                    City = "Poznan",
+                    Street = "Lublinska",
+                    StreetNumber = 3,
                     Height = 12m
+                },
+                    new Building()
+                {
+                    IdBuilding = 6,
+                    City = "Poznan",
+                    Street = "Lublinska",
+                    StreetNumber = 3,
+                    Height = 9
                 }
             };
             builder.HasData(buildings);

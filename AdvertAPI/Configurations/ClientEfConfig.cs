@@ -34,9 +34,9 @@ namespace AdvertAPI.Configurations
                     Email = "badsa@gmail.com",
                     Login = "dafasf21",
                     Phone = "+43131234",
-                    Password = "dsa",
+                    Password = "B7KqEYl86BI7WHWSGM7Vv0tuYwPz1lc7p9egQonkkAQ=", //dsa
                     RefreshToken = "asdfaafasfscsac-fsaf",
-                    Salt = "dsadsa"
+                    Salt = "vrCE57covNR7T2gk3E6XLw=="
                 }
 
             };

@@ -50,9 +50,19 @@ namespace AdvertAPI.Configurations
                   IdClient = 2,
                   StartDate = new DateTime(2020,2,3).Date,
                   EndDate = new DateTime(2020,2,9).Date,
-                  PricePerSquareMeter = 3141,
+                  PricePerSquareMeter = 3344,
                   FromIdBuilding = 1,
-                  ToIdBuilding = 4
+                  ToIdBuilding = 3
+              },
+                  new Campaign()
+              {
+                  IdCampaign = 3,
+                  IdClient = 2,
+                  StartDate = new DateTime(2020,2,9).Date,
+                  EndDate = new DateTime(2020,2,15).Date,
+                  PricePerSquareMeter = 3344,
+                  FromIdBuilding = 4,
+                  ToIdBuilding = 6
               }
            };
             builder.HasData(campaigns);

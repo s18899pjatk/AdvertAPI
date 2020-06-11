@@ -4,14 +4,16 @@ using AdvertAPI.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AdvertAPI.Migrations
 {
     [DbContext(typeof(CampaignDbContext))]
-    partial class CampaignDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200610145022_addedMoreData")]
+    partial class addedMoreData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -291,10 +293,10 @@ namespace AdvertAPI.Migrations
                             FirstName = "Bobby",
                             LastName = "Broody",
                             Login = "dafasf21",
-                            Password = "B7KqEYl86BI7WHWSGM7Vv0tuYwPz1lc7p9egQonkkAQ=",
+                            Password = "dsa",
                             Phone = "+43131234",
                             RefreshToken = "asdfaafasfscsac-fsaf",
-                            Salt = "vrCE57covNR7T2gk3E6XLw=="
+                            Salt = "dsadsa"
                         });
                 });
 
