@@ -4,57 +4,64 @@ using AdvertAPI.Entities;
 using AdvertAPI.Models.Requests;
 using AdvertAPI.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Text;
 
 namespace AdvertAPI_Tests.IntegrationTests.Client
 {
     [TestFixture]
-    class LoginTest
+    class RegisterTest
     {
         [Test]
-        public void LoginExistingUser_Correct()
-        {
-            //Arrange
-            var campaignDbContext = new CampaignDbContext();
-            var dbService = new ClientServiceDb(AppData.Configuration,campaignDbContext);
-            var controller = new ClientController(dbService);
-
-            //Act
-            var res = controller.Login(new LoginRequest
-            {
-                Login = "Jan125",
-                Password = "asd124"
-            });
-
-            //Assert 
-            Assert.IsNotNull(res);
-              var r = (OkObjectResult)res;
-            Assert.True(r.StatusCode == 200);
-        }
-
-        public void  LoginExistingUser_NotCorrectData()
+        public void RegisterNotExistingUser_Correct()
         {
             //Arrange
             var campaignDbContext = new CampaignDbContext();
             var dbService = new ClientServiceDb(AppData.Configuration, campaignDbContext);
             var controller = new ClientController(dbService);
 
-            var res = controller.Login(new LoginRequest
+            //Act
+            var res = controller.Register(new RegisterRequest
             {
+                FirstName = "Mike",
+                LastName = "Paul",
+                Email = "make@gmail.com",
+                Login = "mikke",
+                Password = "mk229",
+                Phone = "+48041141"
+            });
+
+            //Assert 
+            Assert.IsNotNull(res);
+            var r = (OkObjectResult)res;
+            Assert.True(r.StatusCode == 200);
+        }
+
+        [Test]
+        public void RegisterExistingUser_Correct()
+        {
+            //Arrange
+            var campaignDbContext = new CampaignDbContext();
+            var dbService = new ClientServiceDb(AppData.Configuration, campaignDbContext);
+            var controller = new ClientController(dbService);
+
+            //Act
+            var res = controller.Register(new RegisterRequest
+            {
+                FirstName = "Mike",
+                LastName = "Paul",
+                Email = "makey@gmail.com",
                 Login = "Jan125",
-                Password = "babasd"
+                Password = "mk229",
+                Phone = "+48041241"
             });
 
             //Assert 
             Assert.IsNotNull(res);
             var r = (BadRequestObjectResult)res;
             Assert.True(r.StatusCode == 400);
-            Assert.NotNull(r.Value);
         }
     }
 }

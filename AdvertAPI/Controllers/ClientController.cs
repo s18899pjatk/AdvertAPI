@@ -101,7 +101,7 @@ namespace AdvertAPI.Controllers
             {
                 res = _clientServiceDb.CreateCampaign(request);
             }catch(Exception e) when (e is ClientDoesNotExsitsException 
-            || e is WrongDateException)
+            || e is WrongDateException || e is BuildingsAreNotOnTheSameStreetException)
             {
                 return BadRequest(e.Message);
             }

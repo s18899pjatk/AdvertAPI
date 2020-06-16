@@ -99,7 +99,7 @@ namespace AdvertAPI.Services
                     new Claim(ClaimTypes.Role,  "Student"),
                 };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SecretKey"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("faafsasfassdgdfger524312"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken
             (
@@ -144,7 +144,7 @@ namespace AdvertAPI.Services
                 new Claim(ClaimTypes.Role,  "Client"),
                 };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SecretKey"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("faafsasfassdgdfger524312"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken
@@ -243,12 +243,12 @@ namespace AdvertAPI.Services
 
                 if (firstB == null || nextB == null)
                 {
-                    return null;
+                    throw new BuildingsAreNotOnTheSameStreetException();
                 }
 
                 if (firstB.Street != nextB.Street || firstB.City != nextB.City)
                 {
-                    return null;
+                    throw new BuildingsAreNotOnTheSameStreetException();
                 }
                 heights.Add(nextB.Height);
                 numOfBuild++;
