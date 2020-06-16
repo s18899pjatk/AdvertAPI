@@ -1,4 +1,5 @@
 ﻿using AdvertAPI.Entities;
+using AdvertAPI.Exceptions;
 using AdvertAPI.Models.Requests;
 using AdvertAPI.Models.Responses;
 using Microsoft.Extensions.Configuration;
@@ -25,13 +26,18 @@ namespace AdvertAPI.Services
             _configuration = configuration;
         }
 
+        public ClientServiceDb(CampaignDbContext campaignDbContext)
+        {
+            _campaignDbContext = campaignDbContext;
+        }
+
         public LoginResponse Login(LoginRequest request)
         {
             var exists = _campaignDbContext.Clients.Any(c => c.Login.Equals(request.Login));
 
             if (!exists)
             {
-                return null;
+                throw new LoginDoesNotExistsException($"{request.Login} does not exists");
             }
 
             var client = _campaignDbContext.Clients.SingleOrDefault(b => b.Login.Equals(request.Login));
@@ -40,7 +46,7 @@ namespace AdvertAPI.Services
             bool verify = PasswordHashing.Validate(request.Password, client.Salt, client.Password);
             if (!verify)
             {
-                return null;
+                throw new PasswordIsNotCorrectException($"password {request.Password} is not correct");
             }
 
             var claims = new[]
@@ -50,7 +56,7 @@ namespace AdvertAPI.Services
                 new Claim(ClaimTypes.Role,  "Client")
                 };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SecretKey"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("faafsasfassdgdfger524312"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken
@@ -80,7 +86,7 @@ namespace AdvertAPI.Services
 
             if (!exists)
             {
-                return null;
+                throw new TokenDoesNotExistsException($"{rToken} does not exists");
             }
 
             var client = _campaignDbContext.Clients.SingleOrDefault(b => b.RefreshToken.Equals(rToken));
@@ -128,7 +134,7 @@ namespace AdvertAPI.Services
 
             if (LogExists || MailExists || PhoneNumExists)
             {
-                return null;
+               throw new ClientExistsException("Such client is already exists");
             }
 
             var claims = new[]
@@ -182,7 +188,7 @@ namespace AdvertAPI.Services
             var exists = _campaignDbContext.Clients.Any(c => c.Login.Equals(login));
             if (!exists)
             {
-                return null;
+                throw new LoginDoesNotExistsException($"{login} does not exists");
             }
 
             var client = _campaignDbContext.Clients.SingleOrDefault(b => b.Login.Equals(login));
@@ -214,9 +220,13 @@ namespace AdvertAPI.Services
         {
             // def date Format 2020-01-01T00:00:00
             var exists = _campaignDbContext.Clients.Any(c => c.IdClient == request.IdClient);
-            if (request.EndDate < request.StartDate || !exists)
+            if (!exists)
             {
-                return null;
+                throw new ClientDoesNotExsitsException($"client {request.IdClient} does not exists");
+            }
+            if (request.EndDate < request.StartDate)
+            {
+                throw new WrongDateException("campaign should last at least 1 second");
             }
             var heights = new List<decimal>();
             var numOfBuild = 0;

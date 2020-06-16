@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AdvertAPI.Entities;
+using AdvertAPI.Exceptions;
 using AdvertAPI.Models.Requests;
 using AdvertAPI.Models.Responses;
 using AdvertAPI.Services;
@@ -33,10 +34,13 @@ namespace AdvertAPI.Controllers
         [HttpPost]
         public IActionResult Register(RegisterRequest request)
         {
-            var res = _clientServiceDb.Register(request);
-            if (res == null)
+            RegisterResponse res;
+            try
             {
-                return BadRequest("Such client is already exists");
+                 res = _clientServiceDb.Register(request);
+            }catch(ClientExistsException exc)
+            {
+                return BadRequest(exc.Message);
             }
             return Ok(res);
         }
@@ -45,10 +49,13 @@ namespace AdvertAPI.Controllers
         [HttpPost("refresh-token/{rToken}")]
         public IActionResult RefreshToken(string rToken)
         {
-            var res = _clientServiceDb.RefreshToken(rToken);
-            if (res == null)
+            RefreshTokenResponse res;
+            try
             {
-                return BadRequest("Such token does not exists in a database");
+                res = _clientServiceDb.RefreshToken(rToken);
+            }catch(TokenDoesNotExistsException exc)
+            {
+                return BadRequest(exc.Message);
             }
             return Ok(res);
         }
@@ -56,10 +63,13 @@ namespace AdvertAPI.Controllers
         [HttpPost("login")]
         public IActionResult Login(LoginRequest request)
         {
-            var res = _clientServiceDb.Login(request);
-            if (res == null)
+            LoginResponse res;
+            try
             {
-                return StatusCode(401, "Login or password is not correct");
+                res = _clientServiceDb.Login(request);
+            } catch (Exception exc) when (exc is LoginDoesNotExistsException 
+            || exc is PasswordIsNotCorrectException){
+                return BadRequest(exc.Message);
             }
             return Ok(res);
         }
@@ -70,21 +80,30 @@ namespace AdvertAPI.Controllers
         {
             // getting the login of the user from his claims 
             var login = User.Claims.Where(c => c.Issuer == "Artem").FirstOrDefault().Value;
-            var res = _clientServiceDb.ListOfCampaigns(login);
-            if (res == null)
+
+            CampaignListResponse res;
+            try
             {
-                return StatusCode(401);
+                res = _clientServiceDb.ListOfCampaigns(login);
+
+            } catch(LoginDoesNotExistsException exc)
+            {
+                return BadRequest(exc.Message);
             }
             return Ok(res);
         }
+
         [HttpPost("createCampaign")]
         public IActionResult CreateCampaign(CreateCampaignRequest request)
         {
-
-            var res = _clientServiceDb.CreateCampaign(request);
-            if (res == null)
+            CreateCampaignResponse res;
+            try
             {
-                return StatusCode(400);
+                res = _clientServiceDb.CreateCampaign(request);
+            }catch(Exception e) when (e is ClientDoesNotExsitsException 
+            || e is WrongDateException)
+            {
+                return BadRequest(e.Message);
             }
             return Ok(res);
         }   

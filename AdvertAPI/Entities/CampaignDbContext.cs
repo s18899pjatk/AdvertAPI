@@ -25,6 +25,17 @@ namespace AdvertAPI.Entities
 
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder
+            optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder
+                    .UseSqlServer("Data Source=db-mssql;Initial Catalog=s18899;Integrated Security=True;");
+            }
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

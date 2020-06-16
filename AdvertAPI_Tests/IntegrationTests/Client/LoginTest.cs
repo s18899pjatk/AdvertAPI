@@ -4,6 +4,7 @@ using AdvertAPI.Entities;
 using AdvertAPI.Models.Requests;
 using AdvertAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -19,8 +20,9 @@ namespace AdvertAPI_Tests.IntegrationTests.Client
         public void LoginExistingUser_Correct()
         {
             //Arrange
-            var repository = new ClientServiceDb(AppData.Configuration, new CampaignDbContext());
-            var controller = new ClientController(repository);
+            var campaignDbContext = new CampaignDbContext();
+            var dbService = new ClientServiceDb(AppData.Configuration,campaignDbContext);
+            var controller = new ClientController(dbService);
 
             //Act
             var res = controller.Login(new LoginRequest
